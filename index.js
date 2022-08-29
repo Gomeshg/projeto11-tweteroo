@@ -52,7 +52,6 @@ server.post('/tweets', (req, res) => {
         return;
     }
 
-
     const user = users.filter(user => user.username === username);
 
     if(user.length === 0){
@@ -60,13 +59,11 @@ server.post('/tweets', (req, res) => {
         return; 
     }
 
-
     const __tweet = {
         username: username,
         avatar: user[0].avatar,
         tweet: tweet
     }
-
 
     tweets.push(__tweet);
     // res.send(tweets);
@@ -75,8 +72,13 @@ server.post('/tweets', (req, res) => {
 
 
 server.get('/tweets', (req, res) => {
-    let sliceTweets = tweets.slice(tweets.length-10, tweets.length);
-    res.send(sliceTweets.reverse());
+    if(tweets.length > 10){
+        let sliceTweets = tweets.slice(tweets.length-10, tweets.length);
+        res.send(sliceTweets.reverse());
+    }
+    else if(tweets.length <= 10){
+        res.send(tweets.reverse());
+    }
 });
 
 
@@ -89,7 +91,6 @@ server.get('/tweets/:USERNAME', (req, res) => {
         res.status(404).send('Usuário inexistente!');
         return;
     }
-
 
     let sliceTweets = __tweets.slice(__tweets.length-10, __tweets.length);
     res.send(sliceTweets.reverse());
