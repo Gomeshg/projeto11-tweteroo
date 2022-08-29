@@ -8,10 +8,16 @@ server.use(json());
 let users = [];
 let tweets = [];
 
+
 server.post('/sign-up', (req, res) => {
     const {username, avatar} = req.body;
     
-    if(!username || !avatar){
+    if(username === undefined || avatar === undefined){
+        res.status(422).send('A requisição não está no formato esperado!');
+        return;
+    }
+
+    if(username === '' || avatar === ''){
         res.status(400).send('Todos os campos são obrigatórios!');
         return;
     }
@@ -35,17 +41,32 @@ server.post('/sign-up', (req, res) => {
 server.post('/tweets', (req, res) => {
 
     const {username, tweet} = req.body;
+    
+    if(username === undefined || tweet === undefined){
+        res.status(422).send('A requisição não está no formato esperado!');
+        return;
+    }
+
+    if(username === '' || tweet === ''){
+        res.status(400).send('Todos os campos são obrigatórios!');
+        return;
+    }
+
+
     const user = users.filter(user => user.username === username);
+
+    if(user.length === 0){
+        res.status(404).send('Usuário inexistente!');
+        return; 
+    }
+
+
     const __tweet = {
         username: username,
         avatar: user[0].avatar,
         tweet: tweet
     }
 
-    if(!username || !tweet){
-        res.status(400).send('Todos os campos são obrigatórios!');
-        return;
-    }
 
     tweets.push(__tweet);
     // res.send(tweets);
@@ -58,18 +79,26 @@ server.get('/tweets', (req, res) => {
     res.send(sliceTweets.reverse());
 });
 
+
 server.get('/tweets/:USERNAME', (req, res) => {
 
     const username = req.params.USERNAME;
     const __tweets = tweets.filter(tweet => tweet.username === username);
+
+    if(__tweets.length === 0){
+        res.status(404).send('Usuário inexistente!');
+        return;
+    }
+
+
     let sliceTweets = __tweets.slice(__tweets.length-10, __tweets.length);
     res.send(sliceTweets.reverse());
 });
 
+
 server.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}!`);
 });
-
 
 
 function userAlredyKnown(username){
