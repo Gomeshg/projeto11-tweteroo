@@ -27,8 +27,8 @@ server.post('/sign-up', (req, res) => {
     }
     
     users.push(user);
-    res.send(users)
-    // res.status(201).send('Ok');
+    // res.send(users)
+    res.status(201).send('Ok');
 });
 
 
@@ -47,15 +47,22 @@ server.post('/tweets', (req, res) => {
         return;
     }
 
-    console.log(__tweet);
     tweets.push(__tweet);
-    res.send(tweets);
-    // res.status(201).send('OK');
+    // res.send(tweets);
+    res.status(201).send('OK');
 });
 
 
 server.get('/tweets', (req, res) => {
     let sliceTweets = tweets.slice(tweets.length-10, tweets.length);
+    res.send(sliceTweets.reverse());
+});
+
+server.get('/tweets/:USERNAME', (req, res) => {
+
+    const username = req.params.USERNAME;
+    const __tweets = tweets.filter(tweet => tweet.username === username);
+    let sliceTweets = __tweets.slice(__tweets.length-10, __tweets.length);
     res.send(sliceTweets.reverse());
 });
 
