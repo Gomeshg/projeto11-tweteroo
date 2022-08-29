@@ -33,7 +33,6 @@ server.post('/sign-up', (req, res) => {
     }
     
     users.push(user);
-    // res.send(users)
     res.status(201).send('Ok');
 });
 
@@ -66,7 +65,6 @@ server.post('/tweets', (req, res) => {
     }
 
     tweets.push(__tweet);
-    // res.send(tweets);
     res.status(201).send('OK');
 });
 
@@ -92,8 +90,13 @@ server.get('/tweets/:USERNAME', (req, res) => {
         return;
     }
 
-    let sliceTweets = __tweets.slice(__tweets.length-10, __tweets.length);
-    res.send(sliceTweets.reverse());
+    if(__tweets.length > 10){
+        let sliceTweets = __tweets.slice(__tweets.length-10, __tweets.length);
+        res.send(sliceTweets.reverse());
+    }
+    else if(__tweets.length <= 10){
+        res.send(__tweets.reverse());
+    }
 });
 
 
